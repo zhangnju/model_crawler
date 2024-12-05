@@ -5,6 +5,8 @@ import onnx
 from huggingface_hub import HfApi
 from huggingface_hub import snapshot_download
 from huggingface_hub import hf_api, hf_hub_download
+from huggingface_hub import auth_check
+from huggingface_hub.utils import GatedRepoError, RepositoryNotFoundError
 from tqdm import tqdm
 
 def mkdir(path):
@@ -27,14 +29,15 @@ parser.add_argument('--tasks', default='', type=str,
 HF_tasks=["image-classification",
           "object-detection",
           "automatic-speech-recognition",
-          "text-generation"]
+          "text-generation",
+          "sentence-similarity"]
 
 
 def main():
     args = parser.parse_args()
 
     if not args.model_dir:
-        print("please input the valid model dir oath")
+        print("please input the valid model dir path")
     else:
         mkdir(args.model_dir)
 
@@ -83,19 +86,73 @@ def main():
             mkdir(onnx_path)
             if args.num == 0:
                 for i in range(len(torch_models)):
+                     try:
+                        auth_check(torch_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(torch_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(torch_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+
                      model_path = os.path.join(torch_path,torch_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = torch_models[i].modelId, local_dir=model_path)
+
                 for i in range(len(onnx_models)):
+                     try:
+                        auth_check(onnx_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(onnx_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(onnx_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+
                      model_path = os.path.join(onnx_path,onnx_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = onnx_models[i].modelId, local_dir=model_path)
             else:
                 for i in range(min(args.num,len(torch_models))):
+                     try:
+                        auth_check(torch_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(torch_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(torch_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+
                      model_path = os.path.join(torch_path,torch_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = torch_models[i].modelId, local_dir=model_path)
+
                 for i in range(min(args.num,len(onnx_models))):
+                     try:
+                        auth_check(onnx_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(onnx_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(onnx_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+                     
                      model_path = os.path.join(onnx_path,onnx_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = onnx_models[i].modelId, local_dir=model_path)
@@ -108,19 +165,70 @@ def main():
        
         if args.num == 0:
                 for i in range(len(torch_models)):
+                     try:
+                        auth_check(torch_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(torch_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(torch_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+
                      model_path = os.path.join(torch_path,torch_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = torch_models[i].modelId, local_dir=model_path)
                 for i in range(len(onnx_models)):
+                     try:
+                        auth_check(onnx_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(onnx_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(onnx_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+                     
                      model_path = os.path.join(onnx_path,onnx_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = onnx_models[i].modelId, local_dir=model_path)
         else:
                 for i in range(min(args.num,len(torch_models))):
+                     try:
+                        auth_check(torch_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(torch_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(torch_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
+                        
                      model_path = os.path.join(torch_path,torch_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = torch_models[i].modelId, local_dir=torch_path)
                 for i in range(min(args.num,len(onnx_models))):
+                     try:
+                        auth_check(onnx_models[i].modelId)
+                     except GatedRepoError:
+                        # Handle gated repository error
+                        print(onnx_models[i].modelId)
+                        print("You do not have permission to access this gated repository.")
+                        continue
+                     except RepositoryNotFoundError:
+                        # Handle repository not found error
+                        print(onnx_models[i].modelId)
+                        print("The repository was not found or you do not have access.")
+                        continue
                      model_path = os.path.join(onnx_path,onnx_models[i].modelId)
                      mkdir(model_path)
                      snapshot_download(repo_id = onnx_models[i].modelId, local_dir=onnx_path)
